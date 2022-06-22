@@ -90,3 +90,103 @@
 //   //   });
 //   // }
 // }
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MaterialApp(
+    title: 'Todo',
+    home: TodoList(),
+  ));
+}
+
+class TodoList extends StatefulWidget {
+  const TodoList({super.key});
+
+  @override
+  State<TodoList> createState() => _TodoListState();
+}
+
+class _TodoListState extends State<TodoList> {
+  List<String> todoItems = <String>[];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[900],
+      appBar: AppBar(
+        backgroundColor: Colors.grey[800],
+        title: const Text('Todo List'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        focusColor: Colors.amber,
+        onPressed: () async {
+          final val = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddTodo()),
+          );
+          if (val != null) {
+            setState(() {
+              todoItems.add(val);
+            });
+          }
+        },
+        tooltip: 'add todo',
+        backgroundColor: Colors.grey[800],
+        child: const Icon(Icons.add),
+      ),
+      body: ListView.builder(
+        itemCount: todoItems.length,
+        itemBuilder: (BuildContext context, int index) {
+          final item = todoItems[index];
+          return ListTile(
+            title: Text(
+              item,
+              style: TextStyle(
+                color: Colors.grey[50],
+                fontSize: 20,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class AddTodo extends StatefulWidget {
+  const AddTodo({super.key});
+
+  @override
+  State<AddTodo> createState() => _SecondRouteState();
+}
+
+class _SecondRouteState extends State<AddTodo> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.grey[900],
+        appBar: AppBar(
+          backgroundColor: Colors.grey[800],
+          title: const Text('add todo'),
+        ),
+        body: TextField(
+          autofocus: true,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+          ),
+          decoration: const InputDecoration(
+            hintText: 'enter something to do ...',
+            contentPadding: EdgeInsets.all(20.0),
+            hintStyle: TextStyle(
+              color: Colors.grey,
+              fontSize: 20,
+            ),
+          ),
+          onSubmitted: (val) {
+            Navigator.pop(context, val);
+          },
+        ));
+  }
+}
