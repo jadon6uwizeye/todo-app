@@ -91,6 +91,8 @@
 //   // }
 // }
 
+// ignore_for_file: avoid_print, deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -113,44 +115,87 @@ class _TodoListState extends State<TodoList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
-      appBar: AppBar(
-        backgroundColor: Colors.grey[800],
-        title: const Text('Todo List'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        focusColor: Colors.amber,
-        onPressed: () async {
-          final val = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddTodo()),
-          );
-          if (val != null) {
-            setState(() {
-              todoItems.add(val);
-            });
-          }
-        },
-        tooltip: 'add todo',
-        backgroundColor: Colors.grey[800],
-        child: const Icon(Icons.add),
-      ),
-      body: ListView.builder(
-        itemCount: todoItems.length,
-        itemBuilder: (BuildContext context, int index) {
-          final item = todoItems[index];
-          return ListTile(
-            title: Text(
-              item,
-              style: TextStyle(
-                color: Colors.grey[50],
-                fontSize: 20,
-              ),
-            ),
-          );
-        },
-      ),
-    );
+        backgroundColor: Colors.grey[900],
+        appBar: AppBar(
+          backgroundColor: Colors.grey[800],
+          title: const Text('Todo List'),
+        ),
+        floatingActionButton: FloatingActionButton(
+          focusColor: Colors.amber,
+          onPressed: () async {
+            final val = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddTodo()),
+            );
+            if (val != null) {
+              setState(() {
+                todoItems.add(val);
+              });
+            }
+          },
+          tooltip: 'add todo',
+          backgroundColor: Colors.grey[800],
+          child: const Icon(Icons.add),
+        ),
+        body: ListView.builder(
+            itemCount: todoItems.length,
+            itemBuilder: (BuildContext context, int index) {
+              final item = todoItems[index];
+              return ListTile(
+                  title: Text(
+                    item,
+                    style: TextStyle(
+                      color: Colors.grey[50],
+                      fontSize: 20,
+                    ),
+                  ),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: Colors.grey[700],
+                          title: const Text(
+                            'Delete',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          content: Text(
+                              'Are you sure you want to mark "${todoItems[index]}" as done?',
+                              style: TextStyle(
+                                color: Colors.grey[50],
+                              )),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            FlatButton(
+                              child: const Text('Delete',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  )),
+                              onPressed: () {
+                                setState(() {
+                                  todoItems.removeAt(index);
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  });
+            }));
   }
 }
 
